@@ -1,21 +1,33 @@
-require('dotenv').config()
 const express = require('express')
+const app = express();
+const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config()
 
+const port = process.env.PORT
 
-const app = express()
+//MIDDLEWARE
+app.use(cors())
+app.use(express.json());
+
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello Users!')
+})
+app.get('/login' , (req , res)=>{
+  res.send('Login user');
 })
 
-app.get('/Login', (req, res)=>{
-    res.send('<h3>please login at My App</h3>')
-})
-
-app.get('/Register', (req, res)=>{
-    res.send('<h3>please register at My App</h3>')
-})
-
-app.listen(process.env.PORT, () => {
-  console.log(`Example app listening on port ${process.env.PORT}`)
+const connectDB = async ()=>{
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log('DATABASE CONNECTED');
+  } catch (error) {
+    console.log(error);
+  }
+}
+connectDB().then(()=>{
+  app.listen(process.env.PORT)
+}).catch((err)=>{
+  console.log(err)
 })
